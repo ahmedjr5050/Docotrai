@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1031458445561",
+    "project_id": "nutritionforlife-789e5",
+    "storage_bucket": "nutritionforlife-789e5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1031458445561:android:9b640de9040d462072aa28",
+        "android_client_info": {
+          "package_name": "com.example.nutritionforlife"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1WET5lPAJASdG5OxFT7wvQlr1JrwhaVA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
