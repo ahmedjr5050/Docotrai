@@ -7,7 +7,7 @@ import 'package:nutritionforlife/constants.dart';
 import 'package:nutritionforlife/features/auth/presention/cubit/signin_cubit/sign_in_cubit.dart';
 import 'package:nutritionforlife/features/auth/presention/screen/signup_view.dart';
 import 'package:nutritionforlife/features/auth/presention/screen/widgets/components/sign_in_form.dart';
-import 'package:nutritionforlife/features/home/home_view.dart';
+import 'package:nutritionforlife/features/home/screen/home_view.dart';
 
 class SignInScreenBody extends StatefulWidget {
   const SignInScreenBody({super.key});
