@@ -27,7 +27,7 @@ class PredictionCubit extends Cubit<PredictionState> {
       emit(PredictionLoaded(prediction));
     } catch (e) {
       log('Error fetching prediction: $e');
-      emit(PredictionError(e.toString()));
+      emit(PredictionError('المدخلات غير صحيحة، يرجى التحقق من القيم المدخلة'));
     }
   }
 }

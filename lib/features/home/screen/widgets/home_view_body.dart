@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nutritionforlife/features/home/prediction_result_screen.dart';
 import 'package:nutritionforlife/features/home/screen/cubit/doctorai_cubit.dart';
 import 'package:nutritionforlife/features/home/screen/cubit/doctorai_state.dart';
+import 'package:nutritionforlife/features/home/screen/widgets/help_bmi.dart';
+import 'package:nutritionforlife/features/home/screen/widgets/symptoms_page.dart';
 
 class PredictionScreen extends StatefulWidget {
   const PredictionScreen({super.key});
@@ -50,24 +52,47 @@ class _PredictionScreenState extends State<PredictionScreen> {
                 ageController,
                 "Age",
                 Icons.calendar_today,
+                null,
                 'Please enter a valid age.',
               ),
               _buildTextField(
                 bmiController,
                 "BMI",
                 Icons.line_weight,
+                Icons.help_center_outlined,
                 'Please enter a valid BMI.',
+                onSuffixIconPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const BmiPage()),
+                  );
+                },
               ),
               _buildTextField(
                 proteinController,
                 "Protein Intake",
                 Icons.fastfood,
+                null,
                 'Please enter a valid protein intake.',
               ),
               _buildTextField(
                 symptomsController,
                 "Symptoms",
                 Icons.healing,
+                Icons.help_center_outlined,
+                onSuffixIconPressed: () async {
+                  final selectedIndex = await Navigator.push<int>(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SymptomsPage(),
+                    ),
+                  );
+
+                  if (selectedIndex != null) {
+                    symptomsController.text = selectedIndex.toString();
+                  }
+                },
+
                 'Please enter valid symptoms.',
               ),
               const SizedBox(height: 20),
@@ -75,9 +100,21 @@ class _PredictionScreenState extends State<PredictionScreen> {
               const SizedBox(height: 20),
               BlocBuilder<PredictionCubit, PredictionState>(
                 builder: (context, state) {
-                  if (state is PredictionLoaded) {
+                  if (state is PredictionLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state is PredictionLoaded) {
                     _navigateToResultScreen(context, state.prediction.result);
+                  } else if (state is PredictionError) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(state.message),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    });
                   }
+
                   return const SizedBox.shrink();
                 },
               ),
@@ -93,8 +130,10 @@ class _PredictionScreenState extends State<PredictionScreen> {
     TextEditingController controller,
     String label,
     IconData icon,
-    String validationMessage,
-  ) {
+    IconData? iconsuff,
+    String validationMessage, {
+    VoidCallback? onSuffixIconPressed, // NEW: optional onPressed
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
@@ -103,6 +142,17 @@ class _PredictionScreenState extends State<PredictionScreen> {
         decoration: InputDecoration(
           labelText: label,
           prefixIcon: Icon(icon),
+
+          suffixIcon:
+              iconsuff != null
+                  ? Tooltip(
+                    message: 'Click to get help',
+                    child: IconButton(
+                      icon: Icon(iconsuff),
+                      onPressed: onSuffixIconPressed,
+                    ),
+                  )
+                  : null,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
         ),
         validator: (value) {
@@ -111,9 +161,9 @@ class _PredictionScreenState extends State<PredictionScreen> {
           }
           final parsedValue = double.tryParse(value);
           if (parsedValue == null || parsedValue <= 0) {
-            return validationMessage; // Show custom error message
+            return validationMessage;
           }
-          return null; // Return null if input is valid
+          return null;
         },
       ),
     );
